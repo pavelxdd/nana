@@ -11,6 +11,7 @@
  *		provide some interface for file managment
  */
 
+#include <nana/deploy.hpp>
 #include <nana/filesystem/filesystem_ext.hpp>
 #include <vector>
 #include <sstream>
@@ -169,7 +170,32 @@ namespace nana
 	}
 }
 
-#if NANA_USING_NANA_FILESYSTEM 
+#if NANA_USING_BOOST_FILESYSTEM
+
+namespace boost_fs = boost::filesystem;
+
+namespace std {	namespace experimental {	namespace filesystem
+		{
+			path::path(const boost_fs::path& p) : boost_fs::path(p) {}
+			path::path(const boost_fs::path::value_type* s) : boost_fs::path(s) {}
+			path::path(boost_fs::path::value_type* s) : boost_fs::path(s) {}
+			path::path(const boost_fs::path::string_type& s) : boost_fs::path(s) {}
+			path::path(boost_fs::path::string_type& s) : boost_fs::path(s) {}
+
+			std::string path::u8string() const
+			{
+				return nana::to_utf8(boost_fs::path::wstring());
+			}
+
+			std::string path::generic_u8string() const
+			{
+				return nana::to_utf8(boost_fs::path::generic_wstring());
+			}
+		} // namespace filesystem
+	} // namespace experimental
+} // namespace std
+
+#elif NANA_USING_NANA_FILESYSTEM
 
 namespace nana_fs = nana::experimental::filesystem;
 

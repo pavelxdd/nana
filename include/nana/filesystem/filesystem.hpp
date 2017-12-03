@@ -75,6 +75,21 @@ namespace std {
 				socket = boost::filesystem::file_type::socket_file,
 				unknown = boost::filesystem::file_type::type_unknown,
 			};
+
+			class path : public boost::filesystem::path
+			{
+			public:
+				path() = default;
+				path(const boost::filesystem::path& p);
+				path(const boost::filesystem::path::value_type* s);
+				path(boost::filesystem::path::value_type* s);
+				path(const boost::filesystem::path::string_type& s);
+				path(boost::filesystem::path::string_type& s);
+
+				std::string u8string() const;
+				std::string generic_u8string() const;
+			};
+
 			/// enable directory_iterator range-based for statements
 			inline directory_iterator begin(directory_iterator iter) noexcept
 			{
@@ -82,6 +97,17 @@ namespace std {
 			}
 
 			inline directory_iterator end(const directory_iterator&) noexcept
+			{
+				return {};
+			}
+
+			/// enable recursive_directory_iterator range-based for statements
+			inline recursive_directory_iterator begin(recursive_directory_iterator iter) noexcept
+			{
+				return iter;
+			}
+
+			inline recursive_directory_iterator end(const recursive_directory_iterator&) noexcept
 			{
 				return {};
 			}
